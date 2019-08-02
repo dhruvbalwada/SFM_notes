@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,minimum-scale=1">
+
+  <title>Jupyter notebooks</title>
+  <meta name="description" content="Axisymmetric Taylor-Couette flow in Dedalus">
+
+  <link rel="canonical" href="http://0.0.0.0:4000/jupyter-book/features/TaylorCouetteFlow.html">
+  <link rel="alternate" type="application/rss+xml" title="Notes on Statistical Fluid Mechanics" href="http://0.0.0.0:4000/jupyter-book/feed.xml">
+
+  <meta property="og:url"         content="http://0.0.0.0:4000/jupyter-book/features/TaylorCouetteFlow.html" />
+<meta property="og:type"        content="article" />
+<meta property="og:title"       content="Jupyter notebooks" />
+<meta property="og:description" content="Axisymmetric Taylor-Couette flow in Dedalus" />
+<meta property="og:image"       content="" />
+
+
+  <script type="application/ld+json">
+  {
+  "@context": "http://schema.org",
+  "@type": "NewsArticle",
+  "mainEntityOfPage":
+    "http://0.0.0.0:4000/jupyter-book/features/TaylorCouetteFlow.html",
+  "headline":
+    "Jupyter notebooks",
+  "datePublished":
+    "2019-08-02T08:20:36-05:00",
+  "dateModified":
+    "2019-08-02T08:20:36-05:00",
+  "description":
+    "Axisymmetric Taylor-Couette flow in Dedalus",
+  "author": {
+    "@type": "Person",
+    "name": "Dhruv Balwada"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Data 100 at UC Berkeley",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://0.0.0.0:4000/jupyter-book",
+      "width": 60,
+      "height": 60
+    }
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "http://0.0.0.0:4000/jupyter-book",
+    "height": 60,
+    "width": 60
+  }
+}
+
+  </script>
+  <link rel="stylesheet" href="/jupyter-book/assets/css/styles.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css ">
+  <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
+
+  <!-- <link rel="manifest" href="/manifest.json"> -->
+  <!-- <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#efae0a"> -->
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+  <meta name="theme-color" content="#233947">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="/jupyter-book/images/logo/favicon.ico">
+
+  <!-- MathJax Config -->
+  <!-- Allow inline math using $ and automatically break long math lines -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    CommonHTML: {
+        linebreaks: {
+            automatic: true,
+        },
+    },
+});
+</script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_CHTML' async></script>
+
+  <!-- DOM updating function -->
+  <script>
+const runWhenDOMLoaded = cb => {
+  if (document.readyState != 'loading') {
+    cb()
+  } else if (document.addEventListener) {
+    document.addEventListener('DOMContentLoaded', cb)
+  } else {
+    document.attachEvent('onreadystatechange', function() {
+      if (document.readyState == 'complete') cb()
+    })
+  }
+}
+
+// Helper function to init things quickly
+initFunction = function(myfunc) {
+  runWhenDOMLoaded(myfunc);
+  document.addEventListener('turbolinks:load', myfunc);
+};
+</script>
+
+  <!-- Define some javascript variables that will be useful in other javascript -->
+  <script>
+    const site_basename = '/jupyter-book';
+  </script>
+
+  <!-- Add AnchorJS to let headers be linked -->
+  <script src="/jupyter-book/assets/js/anchor.min.js"  type="text/javascript"></script>
+  <script>
+
+initFunction(function () {
+    anchors.add("main h1, main h2, main h3, main h4")
+});
+
+</script>
+
+  <!-- Include Turbolinks to make page loads fast -->
+  <!-- https://github.com/turbolinks/turbolinks -->
+  <script src="/jupyter-book/assets/js/turbolinks.js" async></script>
+  <meta name="turbolinks-cache-control" content="no-cache">
+
+  <!-- Load nbinteract for widgets -->
+  
+
+  <!-- Load Thebelab for interactive widgets -->
+  <!-- Include Thebelab for interactive code if it's enabled -->
+
+
+
+  <!-- Load the auto-generating TOC -->
+  <script src="/jupyter-book/assets/js/tocbot.min.js"  type="text/javascript"></script>
+  <script>
+var initToc = function () {
+  tocbot.init({
+    tocSelector: 'nav.onthispage',
+    contentSelector: '.c-textbook__content',
+    headingSelector: 'h2, h3',
+    orderedList: false,
+    collapseDepth: 6,
+    listClass: 'toc__menu',
+    activeListItemClass: "",  // Not using
+    activeLinkClass: "", // Not using
+  });
+  tocbot.refresh();
+}
+initFunction(initToc);
+</script>
+
+  <!-- Google analytics -->
+  <script src="/jupyter-book/assets/js/ga.js" async></script>
+
+  <!-- Clipboard copy button -->
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" async></script>
+
+  <!-- Load JS that depends on site variables -->
+  <script>
+/**
+ * Set up copy/paste for code blocks
+ */
+const codeCellId = index => `codecell${index}`
+
+const clipboardButton = id =>
+  `<a id="copy-button-${id}" class="btn copybtn o-tooltip--left" data-tooltip="Copy" data-clipboard-target="#${id}">
+    <img src="/jupyter-book/assets/images/copy-button.svg" alt="Copy to clipboard">
+  </a>`
+
+// Clears selected text since ClipboardJS will select the text when copying
+const clearSelection = () => {
+  if (window.getSelection) {
+    window.getSelection().removeAllRanges()
+  } else if (document.selection) {
+    document.selection.empty()
+  }
+}
+
+// Changes tooltip text for two seconds, then changes it back
+const temporarilyChangeTooltip = (el, newText) => {
+  const oldText = el.getAttribute('data-tooltip')
+  el.setAttribute('data-tooltip', newText)
+  setTimeout(() => el.setAttribute('data-tooltip', oldText), 2000)
+}
+
+const addCopyButtonToCodeCells = () => {
+  // If ClipboardJS hasn't loaded, wait a bit and try again. This
+  // happens because we load ClipboardJS asynchronously.
+  if (window.ClipboardJS === undefined) {
+    setTimeout(addCopyButtonToCodeCells, 250)
+    return
+  }
+
+  const codeCells = document.querySelectorAll('div.c-textbook__content > div.highlighter-rouge > div.highlight > pre, div.input_area pre')
+  codeCells.forEach((codeCell, index) => {
+    const id = codeCellId(index)
+    codeCell.setAttribute('id', id)
+    if (document.getElementById("copy-button" + id) == null) {
+      codeCell.insertAdjacentHTML('afterend', clipboardButton(id));
+    }
+  })
+
+  const clipboard = new ClipboardJS('.copybtn')
+  clipboard.on('success', event => {
+    clearSelection()
+    temporarilyChangeTooltip(event.trigger, 'Copied!')
+  })
+
+  clipboard.on('error', event => {
+    temporarilyChangeTooltip(event.trigger, 'Failed to copy')
+  })
+
+  // Get rid of clipboard before the next page visit to avoid memory leak
+  document.addEventListener('turbolinks:before-visit', () =>
+    clipboard.destroy()
+  )
+}
+
+initFunction(addCopyButtonToCodeCells);
+</script>
+
+
+  <!-- Hide cell code -->
+  <script>
+    /**
+    Add buttons to hide code cells
+    */
+
+
+    var setCodeCellVisibility = function (inputField, kind) {
+        // Update the image and class for hidden
+        var id = inputField.getAttribute('data-id');
+        var codeCell = document.querySelector(`#${id} div.highlight`);
+
+        if (kind === "visible") {
+            codeCell.classList.remove('hidden');
+            inputField.checked = true;
+        } else {
+            codeCell.classList.add('hidden');
+            inputField.checked = false;
+        }
+    }
+
+    var toggleCodeCellVisibility = function (event) {
+        // The label is clicked, and now we decide what to do based on the input field's clicked status
+        if (event.target.tagName === "LABEL") {
+            var inputField = event.target.previousElementSibling;
+        } else {
+            // It is the span inside the target
+            var inputField = event.target.parentElement.previousElementSibling;
+        }
+
+        if (inputField.checked === true) {
+            setCodeCellVisibility(inputField, "visible");
+        } else {
+            setCodeCellVisibility(inputField, "hidden");
+        }
+    }
+
+
+    // Button constructor
+    const hideCodeButton = id => `<input class="hidebtn" type="checkbox" id="hidebtn${id}" data-id="${id}"><label title="Toggle cell" for="hidebtn${id}" class="plusminus"><span class="pm_h"></span><span class="pm_v"></span></label>`
+
+    var addHideButton = function () {
+        // If a hide button is already added, don't add another
+        if (document.querySelector('div.hidecode input') !== null) {
+            return;
+        }
+
+        // Find the input cells and add a hide button
+        document.querySelectorAll('div.input_area').forEach(function (item, index) {
+            if (!item.classList.contains("hidecode")) {
+                // Skip the cell if it doesn't have a hidecode class
+                return;
+            }
+
+            const id = codeCellId(index)
+            item.setAttribute('id', id);
+            // Insert the button just inside the end of the next div
+            item.querySelector('div').insertAdjacentHTML('beforeend', hideCodeButton(id))
+
+            // Set up the visibility toggle
+            hideLink = document.querySelector(`#${id} div.highlight + input + label`);
+            hideLink.addEventListener('click', toggleCodeCellVisibility)
+        });
+    }
+
+
+    // Initialize the hide buttos
+    var initHiddenCells = function () {
+        // Add hide buttons to the cells
+        addHideButton();
+
+        // Toggle the code cells that should be hidden
+        document.querySelectorAll('div.hidecode input').forEach(function (item) {
+            setCodeCellVisibility(item, 'hidden');
+            item.checked = true;
+        })
+    }
+
+    initFunction(initHiddenCells);
+
+</script>
+
+  <!-- Load custom website scripts -->
+  <script src="/jupyter-book/assets/js/scripts.js" async></script>
+
+  <!-- Load custom user CSS and JS  -->
+  <script src="/jupyter-book/assets/custom/custom.js" async></script>
+  <link rel="stylesheet" href="/jupyter-book/assets/custom/custom.css">
+
+  <!-- Update interact links w/ REST param, is defined in includes so we can use templates -->
+  
+
+  <!-- Lunr search code - will only be executed on the /search page -->
+  <script src="/jupyter-book/assets/js/lunr/lunr.min.js" type="text/javascript"></script>
+  <script>var initQuery = function() {
+  // See if we have a search box
+  var searchInput = document.querySelector('input#lunr_search');
+  if (searchInput === null) {
+    return;
+  }
+
+  // Function to parse our lunr cache
+  var idx = lunr(function () {
+    this.field('title')
+    this.field('excerpt')
+    this.field('categories')
+    this.field('tags')
+    this.ref('id')
+
+    this.pipeline.remove(lunr.trimmer)
+
+    for (var item in store) {
+      this.add({
+        title: store[item].title,
+        excerpt: store[item].excerpt,
+        categories: store[item].categories,
+        tags: store[item].tags,
+        id: item
+      })
+    }
+  });
+
+  // Run search upon keyup
+  searchInput.addEventListener('keyup', function () {
+    var resultdiv = document.querySelector('#results');
+    var query = document.querySelector("input#lunr_search").value.toLowerCase();
+    var result =
+      idx.query(function (q) {
+        query.split(lunr.tokenizer.separator).forEach(function (term) {
+          q.term(term, { boost: 100 })
+          if(query.lastIndexOf(" ") != query.length-1){
+            q.term(term, {  usePipeline: false, wildcard: lunr.Query.wildcard.TRAILING, boost: 10 })
+          }
+          if (term != ""){
+            q.term(term, {  usePipeline: false, editDistance: 1, boost: 1 })
+          }
+        })
+      });
+
+      // Empty the results div
+      while (resultdiv.firstChild) {
+        resultdiv.removeChild(resultdiv.firstChild);
+      }
+
+    resultdiv.insertAdjacentHTML('afterbegin', '<p class="results__found">'+result.length+' Result(s) found</p>');
+    for (var item in result) {
+      var ref = result[item].ref;
+      if(store[ref].teaser){
+        var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<div class="archive__item-teaser">'+
+                '<img src="'+store[ref].teaser+'" alt="">'+
+              '</div>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      else{
+    	  var searchitem =
+          '<div class="list__item">'+
+            '<article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">'+
+              '<h2 class="archive__item-title" itemprop="headline">'+
+                '<a href="'+store[ref].url+'" rel="permalink">'+store[ref].title+'</a>'+
+              '</h2>'+
+              '<p class="archive__item-excerpt" itemprop="description">'+store[ref].excerpt.split(" ").splice(0,20).join(" ")+'...</p>'+
+            '</article>'+
+          '</div>';
+      }
+      resultdiv.insertAdjacentHTML('beforeend', searchitem);
+    }
+  });
+};
+
+initFunction(initQuery);
+</script>
+</head>
+
+  <body>
+    <!-- .js-show-sidebar shows sidebar by default -->
+    <div id="js-textbook" class="c-textbook js-show-sidebar">
+      
+
+
+
+<nav id="js-sidebar" class="c-textbook__sidebar">
+  <a href="https://jupyter.org/jupyter-book/intro.html"><img src="/jupyter-book/images/logo/logo.png" class="textbook_logo" id="sidebar-logo" data-turbolinks-permanent/></a>
+  <h2 class="c-sidebar__title">Notes on Statistical Fluid Mechanics</h2>
+  <ul class="c-sidebar__chapters">
+    
+      
+      
+
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter">
+        <a class="c-sidebar__entry "
+          href="/jupyter-book/intro.html"
+        >
+          
+          Home
+        </a>
+
+        
+      </li>
+
+      
+    
+      
+      
+
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter">
+        <a class="c-sidebar__entry "
+          href="/jupyter-book/files/inertial_ranges_Kolmogrov.html"
+        >
+          
+            1.
+          
+          Inertial Ranges
+        </a>
+
+        
+      </li>
+
+      
+    
+      
+      
+
+      
+      
+
+      
+      
+      <li class="c-sidebar__chapter">
+        <a class="c-sidebar__entry "
+          href="/jupyter-book/files/vertical_velocities.html"
+        >
+          
+            2.
+          
+          Vertical Velocity
+        </a>
+
+        
+      </li>
+
+      
+    
+      
+      
+        <li class="c-sidebar__chapter"><a class="c-sidebar__entry" href="/jupyter-book/search.html">Search</a></li>
+        
+  </ul>
+  <p class="sidebar_footer">Powered by <a href="https://github.com/jupyter/jupyter-book">Jupyter Book</a></p>
+</nav>
+
+      
+      <!-- Empty sidebar placeholder that we'll auto-fill with javascript -->
+      <aside class="sidebar__right">
+          <header><h4 class="nav__title"><i class="fa fa-list"></i>   On this page</h4></header>
+          <nav class="onthispage">
+          </nav>
+      </aside>
+      
+      <main class="c-textbook__page" tabindex="-1">
+          <div class="o-wrapper">
+            <div class="c-sidebar-toggle">
+  <!-- We show the sidebar by default so we use .is-active -->
+  <button
+    id="js-sidebar-toggle"
+    class="hamburger hamburger--arrowalt is-active"
+  >
+    <span class="hamburger-box">
+      <span class="hamburger-inner"></span>
+    </span>
+    <span class="c-sidebar-toggle__label">Toggle Sidebar</span>
+  </button>
+</div>
+
+            
+<div class="buttons">
+
+
+
+
+
+
+</div>
+
+
+            <div class="c-textbook__content">
+              <h1 id="axisymmetric-taylor-couette-flow-in-dedalus">Axisymmetric Taylor-Couette flow in Dedalus</h1>
+
+<p><img src="http://upload.wikimedia.org/wikipedia/commons/3/3d/CouetteTaylorSystem.svg" alt="Taylor Couette Flow" title="Taylor Couette Flow" />
+(image: wikipedia)</p>
+
+<p>Taylor-Couette flow is characterized by three dimensionless numbers:</p>
+
+<p>$\eta = R1/R2$, the ratio of the inner cylidner radius $R_1$ to the outer cylinder radius $R_2$</p>
+
+<p>$\mu = \Omega_2/\Omega_1$, the ratio of the OUTER cylinder rotation rate $\Omega_2$ to the inner rate $\Omega_1$</p>
+
+<p>$\mathrm{Re} = \Omega_1 R_1 \delta/\nu$, the Reynolds numbers, where $\delta = R_2 - R_1$, the gap width between the cylinders</p>
+
+<p>We non dimensionalize the flow in terms of</p>
+
+<p>$[\mathrm{L}] = \delta = R_2 - R_1$</p>
+
+<p>$[\mathrm{V}] = R_1 \Omega_1$</p>
+
+<p>$[\mathrm{M}] = \rho \delta^3$</p>
+
+<p>And choose $\delta = 1$, $R_1 \Omega_1 = 1$, and $\rho = 1$.</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">%</span><span class="n">pylab</span> <span class="n">inline</span>
+
+</code></pre></div>    </div>
+  </div>
+
+  <div class="output_wrapper">
+    <div class="output_subarea">
+      <div class="output_stream highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Populating the interactive namespace from numpy and matplotlib
+</code></pre></div>      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+
+<span class="kn">import</span> <span class="nn">dedalus.public</span> <span class="k">as</span> <span class="n">de</span> 
+<span class="kn">from</span> <span class="nn">dedalus.extras</span> <span class="kn">import</span> <span class="n">flow_tools</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<p>Here, we set logging to <code class="highlighter-rouge">INFO</code> level. Currently, by default, the parsing in Dedalus sets its logging output to <code class="highlighter-rouge">DEBUG</code> in notebooks, which produces more info than we need here.</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">root</span>
+<span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+    <span class="n">h</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="s">"INFO"</span><span class="p">)</span>
+    
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<h2 id="input-parameters">Input parameters</h2>
+
+<p>These parameters are taken from Barenghi (1991) J. Comp. Phys. After running, we’ll compare it compute the growth rate and compare it to the value $\gamma_{analytic} = 0.430108693$</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># input parameters from Barenghi (1991)</span>
+<span class="n">eta</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mf">1.444</span> <span class="c"># R1/R2</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">3.13</span>   <span class="c"># vertical wavenumber</span>
+<span class="n">Re</span> <span class="o">=</span> <span class="mf">80.</span>       <span class="c"># in units of R1*Omega1*delta/nu</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="mf">0.</span>        <span class="c"># Omega2/Omega1</span>
+
+<span class="c"># computed quantitites</span>
+<span class="n">omega_in</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">omega_out</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">omega_in</span>
+<span class="n">r_in</span> <span class="o">=</span> <span class="n">eta</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">eta</span><span class="p">)</span>
+<span class="n">r_out</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">eta</span><span class="p">)</span>
+<span class="n">height</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">alpha</span> 
+<span class="n">v_l</span> <span class="o">=</span> <span class="mf">1.</span> <span class="c"># by default, we set v_l to 1.</span>
+<span class="n">v_r</span> <span class="o">=</span> <span class="n">omega_out</span><span class="o">*</span><span class="n">r_out</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<h2 id="problem-domain">Problem Domain</h2>
+<p>Every PDE takes place somewhere, so we define a <em>domain</em>, which in this case is the $z$ and $r$ directions. Because the $r$ direction has walls, we use a <code class="highlighter-rouge">Chebyshev</code> basis, but the $z$ direction is periodic, so we use a <code class="highlighter-rouge">Fourier</code> basis. The <code class="highlighter-rouge">Domain</code> object combines these.</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># bases</span>
+<span class="n">r_basis</span> <span class="o">=</span> <span class="n">de</span><span class="o">.</span><span class="n">Chebyshev</span><span class="p">(</span><span class="s">'r'</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="p">(</span><span class="n">r_in</span><span class="p">,</span> <span class="n">r_out</span><span class="p">),</span> <span class="n">dealias</span><span class="o">=</span><span class="mi">3</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">z_basis</span> <span class="o">=</span> <span class="n">de</span><span class="o">.</span><span class="n">Fourier</span><span class="p">(</span><span class="s">'z'</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">dealias</span><span class="o">=</span><span class="mi">3</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">domain</span> <span class="o">=</span> <span class="n">de</span><span class="o">.</span><span class="n">Domain</span><span class="p">([</span><span class="n">z_basis</span><span class="p">,</span> <span class="n">r_basis</span><span class="p">],</span> <span class="n">grid_dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<h2 id="equations">Equations</h2>
+
+<p>We use the <code class="highlighter-rouge">IVP</code> object, which can parse a set of equations in plain text and combine them into an initial value problem.</p>
+
+<p>Here, we code up the equations for the “primative” variables, $\mathbf{v} = u \mathbf{\hat{r}} + v \mathbf{\hat{\theta}} + w \mathbf{\hat{z}}$ and $p$, along with their first derivatives.</p>
+
+<p>The equations are the incompressible, axisymmetric Navier-Stokes equations in cylindrical coordinates</p>
+
+<p>The axes will be called $z$ and $r$, and we will expand the non-constant $r^2$ terms, to a cutoff precision of $10^{-8}$. These non-constant coefficients (called “NCC” in Dedalus) are geometric here, but they could be background states in convection, or position dependent diffusion coefficients, or whatever.</p>
+
+<p>We also add the parameters to the object, so we can use their names in the equations below.</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">TC</span> <span class="o">=</span> <span class="n">de</span><span class="o">.</span><span class="n">IVP</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="s">'p'</span><span class="p">,</span> <span class="s">'u'</span><span class="p">,</span> <span class="s">'v'</span><span class="p">,</span> <span class="s">'w'</span><span class="p">,</span> <span class="s">'ur'</span><span class="p">,</span> <span class="s">'vr'</span><span class="p">,</span> <span class="s">'wr'</span><span class="p">],</span> <span class="n">ncc_cutoff</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">meta</span><span class="p">[:][</span><span class="s">'r'</span><span class="p">][</span><span class="s">'dirichlet'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">'nu'</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">Re</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">'v_l'</span><span class="p">]</span> <span class="o">=</span> <span class="n">v_l</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">'v_r'</span><span class="p">]</span> <span class="o">=</span> <span class="n">v_r</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">TC</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">'v_r'</span><span class="p">]</span><span class="o">/</span><span class="n">TC</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">'v_l'</span><span class="p">]</span> <span class="o">*</span> <span class="n">eta</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<p>The equations are multiplied through by $r^2$, so that there are no $1/r$ terms, which require more coefficients in the expansion</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">TC</span><span class="o">.</span><span class="n">add_equation</span><span class="p">(</span><span class="s">"r*ur + u + r*dz(w) = 0"</span><span class="p">)</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">add_equation</span><span class="p">(</span><span class="s">"r*r*dt(u) - r*r*nu*dr(ur) - r*nu*ur - r*r*nu*dz(dz(u)) + nu*u + r*r*dr(p) = -r*r*u*ur - r*r*w*dz(u) + r*v*v"</span><span class="p">)</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">add_equation</span><span class="p">(</span><span class="s">"r*r*dt(v) - r*r*nu*dr(vr) - r*nu*vr - r*r*nu*dz(dz(v)) + nu*v  = -r*r*u*vr - r*r*w*dz(v) - r*u*v"</span><span class="p">)</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">add_equation</span><span class="p">(</span><span class="s">"r*dt(w) - r*nu*dr(wr) - nu*wr - r*nu*dz(dz(w)) + r*dz(p) = -r*u*wr - r*w*dz(w)"</span><span class="p">)</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">add_equation</span><span class="p">(</span><span class="s">"ur - dr(u) = 0"</span><span class="p">)</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">add_equation</span><span class="p">(</span><span class="s">"vr - dr(v) = 0"</span><span class="p">)</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">add_equation</span><span class="p">(</span><span class="s">"wr - dr(w) = 0"</span><span class="p">)</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<h2 id="initial-and-boundary-conditions">Initial and Boundary Conditions</h2>
+
+<p>First we create some aliases to the $r$ and $z$ grids, so we can quickly compute the analytic Couette flow solution for unperturbed, unstable axisymmetric flow.</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">scales</span><span class="o">=</span><span class="n">domain</span><span class="o">.</span><span class="n">dealias</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">scales</span><span class="o">=</span><span class="n">domain</span><span class="o">.</span><span class="n">dealias</span><span class="p">)</span>
+ 
+<span class="n">p_analytic</span> <span class="o">=</span> <span class="p">(</span><span class="n">eta</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">eta</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">eta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">r</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">eta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">v_analytic</span> <span class="o">=</span> <span class="n">eta</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">eta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">eta</span><span class="p">))</span> <span class="o">-</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">eta</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">mu</span><span class="o">/</span><span class="n">eta</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> 
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<p>And now we add boundary conditions, simply by typing them in plain text, just like the equations.</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># boundary conditions</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">add_bc</span><span class="p">(</span><span class="s">"left(u) = 0"</span><span class="p">)</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">add_bc</span><span class="p">(</span><span class="s">"left(v) = v_l"</span><span class="p">)</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">add_bc</span><span class="p">(</span><span class="s">"left(w) = 0"</span><span class="p">)</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">add_bc</span><span class="p">(</span><span class="s">"right(u) = 0"</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="s">"nz != 0"</span><span class="p">)</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">add_bc</span><span class="p">(</span><span class="s">"right(v) = v_r"</span><span class="p">)</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">add_bc</span><span class="p">(</span><span class="s">"right(w) = 0"</span><span class="p">)</span>
+<span class="n">TC</span><span class="o">.</span><span class="n">add_bc</span><span class="p">(</span><span class="s">"left(p) = 0"</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="s">"nz == 0"</span><span class="p">)</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<p>We can now set the parameters of the problem, $\nu$, $v_l$, and $v_r$, and have the code log $\mu$ to the output (which can be <code class="highlighter-rouge">stdout</code>, a file, or both).</p>
+
+<h2 id="timestepping">Timestepping</h2>
+
+<p>Dedalus comes with a lot of timesteppers, and makes it very easy to add your favorite one. Here we pick <code class="highlighter-rouge">RK443</code>, an IMEX Runga-Kutta scheme. We set our maximum timestep <code class="highlighter-rouge">max_dt</code>, and choose the various stopping parameters.</p>
+
+<p>Finally, we’ve got our full initial value problem (represented by the <code class="highlighter-rouge">IVP</code>) object: a timestepper, a domain, and a <code class="highlighter-rouge">ParsedProblem</code> (or equation set)</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dt</span> <span class="o">=</span> <span class="n">max_dt</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="n">omega1</span> <span class="o">=</span> <span class="n">TC</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">'v_l'</span><span class="p">]</span><span class="o">/</span><span class="n">r_in</span>
+<span class="n">period</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">omega1</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">de</span><span class="o">.</span><span class="n">timesteppers</span><span class="o">.</span><span class="n">RK443</span>
+<span class="n">IVP</span> <span class="o">=</span> <span class="n">TC</span><span class="o">.</span><span class="n">build_solver</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+<span class="n">IVP</span><span class="o">.</span><span class="n">stop_sim_time</span> <span class="o">=</span> <span class="mf">15.</span><span class="o">*</span><span class="n">period</span>
+<span class="n">IVP</span><span class="o">.</span><span class="n">stop_wall_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+<span class="n">IVP</span><span class="o">.</span><span class="n">stop_iteration</span> <span class="o">=</span> <span class="mi">10000000</span>
+
+</code></pre></div>    </div>
+  </div>
+
+  <div class="output_wrapper">
+    <div class="output_subarea">
+      <div class="output_stream highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2018-10-14 08:57:40,080 pencil 0/1 INFO :: Building pencil matrix 1/16 (~6%) Elapsed: 0s, Remaining: 1s, Rate: 2.7e+01/s
+2018-10-14 08:57:40,120 pencil 0/1 INFO :: Building pencil matrix 2/16 (~12%) Elapsed: 0s, Remaining: 1s, Rate: 2.6e+01/s
+2018-10-14 08:57:40,196 pencil 0/1 INFO :: Building pencil matrix 4/16 (~25%) Elapsed: 0s, Remaining: 0s, Rate: 2.6e+01/s
+2018-10-14 08:57:40,273 pencil 0/1 INFO :: Building pencil matrix 6/16 (~38%) Elapsed: 0s, Remaining: 0s, Rate: 2.6e+01/s
+2018-10-14 08:57:40,346 pencil 0/1 INFO :: Building pencil matrix 8/16 (~50%) Elapsed: 0s, Remaining: 0s, Rate: 2.6e+01/s
+2018-10-14 08:57:40,420 pencil 0/1 INFO :: Building pencil matrix 10/16 (~62%) Elapsed: 0s, Remaining: 0s, Rate: 2.7e+01/s
+2018-10-14 08:57:40,487 pencil 0/1 INFO :: Building pencil matrix 12/16 (~75%) Elapsed: 0s, Remaining: 0s, Rate: 2.7e+01/s
+2018-10-14 08:57:40,555 pencil 0/1 INFO :: Building pencil matrix 14/16 (~88%) Elapsed: 1s, Remaining: 0s, Rate: 2.7e+01/s
+2018-10-14 08:57:40,624 pencil 0/1 INFO :: Building pencil matrix 16/16 (~100%) Elapsed: 1s, Remaining: 0s, Rate: 2.8e+01/s
+</code></pre></div>      </div>
+    </div>
+  </div>
+</div>
+
+<p>We initialize the state vector, given by <code class="highlighter-rouge">IVP.state</code>. To make life a little easier, we set some aliases first:</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">p</span> <span class="o">=</span> <span class="n">IVP</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s">'p'</span><span class="p">]</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">IVP</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s">'u'</span><span class="p">]</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">IVP</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s">'v'</span><span class="p">]</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">IVP</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s">'w'</span><span class="p">]</span>
+<span class="n">ur</span> <span class="o">=</span> <span class="n">IVP</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s">'ur'</span><span class="p">]</span>
+<span class="n">vr</span> <span class="o">=</span> <span class="n">IVP</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s">'vr'</span><span class="p">]</span>
+<span class="n">wr</span> <span class="o">=</span> <span class="n">IVP</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s">'wr'</span><span class="p">]</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<p>Next, we create a new field, $\phi$, defined on the <code class="highlighter-rouge">domain</code>, which we’ll use below to compute incompressible, random velocity perturbations.</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">phi</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">new_field</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'phi'</span><span class="p">)</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<p>Here, we set all these to their dealiased domains. Dedalus allows you to set the “scale” of your data: this allows you to interpolate your data to a grid of any size at spectral accuracy. Of course, this isn’t CSI: Fluid Dynamics, so you won’t get any more detail than your highest spectral coefficient.</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">[</span><span class="n">phi</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">ur</span><span class="p">,</span><span class="n">vr</span><span class="p">,</span><span class="n">wr</span><span class="p">]:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">set_scales</span><span class="p">(</span><span class="n">domain</span><span class="o">.</span><span class="n">dealias</span><span class="p">,</span> <span class="n">keep_data</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<p>Now we set the state vector with our previously computed analytic solution, compute the first derivatives (to make our system first order)</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">v</span><span class="p">[</span><span class="s">'g'</span><span class="p">]</span> <span class="o">=</span> <span class="n">v_analytic</span>
+<span class="c">#p['g'] = p_analytic</span>
+
+<span class="n">v</span><span class="o">.</span><span class="n">differentiate</span><span class="p">(</span><span class="s">'r'</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">vr</span><span class="p">)</span>
+
+</code></pre></div>    </div>
+  </div>
+
+  <div class="output_wrapper">
+    <div class="output_subarea">
+
+      <div class="output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;Field 4654371112&gt;
+</code></pre></div>      </div>
+
+    </div>
+  </div>
+</div>
+
+<p>And finally, we set some small, incompressible perturbations to the velocity field so we can kick off our linear instability.</p>
+
+<p>First, we initialize $\phi$ (which we created above) to Gaussian noise and then mask it to only appear in the center of the domain, so we don’t violate the boundary conditions. We then take its curl to get the velocity perturbations.</p>
+
+<p>Unfortunately, Gaussian noise on the grid is generally a bad idea: zone-to-zone variations (that is, the highest frequency components) will be amplified arbitrarily by any differentiation. So, let’s filter out those high frequency components using this handy little function:</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">filter_field</span><span class="p">(</span><span class="n">field</span><span class="p">,</span><span class="n">frac</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="n">dom</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">domain</span>
+    <span class="n">local_slice</span> <span class="o">=</span> <span class="n">dom</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">coeff_layout</span><span class="o">.</span><span class="n">slices</span><span class="p">(</span><span class="n">scales</span><span class="o">=</span><span class="n">dom</span><span class="o">.</span><span class="n">dealias</span><span class="p">)</span>
+    <span class="n">coeff</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dom</span><span class="o">.</span><span class="n">dim</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">coeff</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">dom</span><span class="o">.</span><span class="n">global_coeff_shape</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">endpoint</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+    <span class="n">cc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="o">*</span><span class="n">coeff</span><span class="p">)</span>
+    
+    <span class="n">field_filter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dom</span><span class="o">.</span><span class="n">local_coeff_shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="s">'bool'</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dom</span><span class="o">.</span><span class="n">dim</span><span class="p">):</span>
+        <span class="n">field_filter</span> <span class="o">=</span> <span class="n">field_filter</span> <span class="o">|</span> <span class="p">(</span><span class="n">cc</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">local_slice</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">frac</span><span class="p">)</span>
+    <span class="n">field</span><span class="p">[</span><span class="s">'c'</span><span class="p">][</span><span class="n">field_filter</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="n">j</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<p>This is not the best filter: it assumes that cutting off above a certain Chebyshev mode $n$ and Fourier mode $n$ will be OK, though this may produce anisotropies in the data (I haven’t checked). If you’re worrying about the anisotropy of the initial noise of your ICs, you can always replace this filter with something better.</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># incompressible perturbation, arbitrary vorticity</span>
+<span class="c"># u = -dz(phi)</span>
+<span class="c"># w = dr(phi) + phi/r</span>
+
+<span class="n">phi</span><span class="p">[</span><span class="s">'g'</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="s">'g'</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">r_in</span><span class="p">))</span>
+<span class="n">filter_field</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+<span class="n">phi</span><span class="o">.</span><span class="n">differentiate</span><span class="p">(</span><span class="s">'z'</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
+<span class="n">u</span><span class="p">[</span><span class="s">'g'</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">phi</span><span class="o">.</span><span class="n">differentiate</span><span class="p">(</span><span class="s">'r'</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
+<span class="n">w</span><span class="p">[</span><span class="s">'g'</span><span class="p">]</span> <span class="o">+=</span> <span class="n">phi</span><span class="p">[</span><span class="s">'g'</span><span class="p">]</span><span class="o">/</span><span class="n">r</span>
+
+<span class="n">u</span><span class="o">.</span><span class="n">differentiate</span><span class="p">(</span><span class="s">'r'</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">ur</span><span class="p">)</span>
+<span class="n">w</span><span class="o">.</span><span class="n">differentiate</span><span class="p">(</span><span class="s">'r'</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">wr</span><span class="p">)</span>
+
+</code></pre></div>    </div>
+  </div>
+
+  <div class="output_wrapper">
+    <div class="output_subarea">
+
+      <div class="output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;Field 4654371168&gt;
+</code></pre></div>      </div>
+
+    </div>
+  </div>
+</div>
+
+<p>Now we check that incompressibility is indeed satisfied, first by computing $\nabla \cdot u$,</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">divu0</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">new_field</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'divu0'</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">differentiate</span><span class="p">(</span><span class="s">'r'</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">divu0</span><span class="p">)</span>
+<span class="n">divu0</span><span class="p">[</span><span class="s">'g'</span><span class="p">]</span> <span class="o">+=</span> <span class="n">u</span><span class="p">[</span><span class="s">'g'</span><span class="p">]</span><span class="o">/</span><span class="n">r</span> <span class="o">+</span> <span class="n">w</span><span class="o">.</span><span class="n">differentiate</span><span class="p">(</span><span class="s">'z'</span><span class="p">)[</span><span class="s">'g'</span><span class="p">]</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<p>and then by plotting it to make sure it’s nowhere greater than $\sim 10^{-15}$</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">figsize</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">pcolormesh</span><span class="p">((</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">ones_like</span><span class="p">(</span><span class="n">z</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,(</span><span class="n">z</span><span class="o">*</span><span class="n">ones_like</span><span class="p">(</span><span class="n">r</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">divu0</span><span class="p">[</span><span class="s">'g'</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s">'PuOr'</span><span class="p">)</span>
+<span class="n">colorbar</span><span class="p">()</span>
+<span class="n">axis</span><span class="p">(</span><span class="s">'image'</span><span class="p">)</span>
+<span class="n">xlabel</span><span class="p">(</span><span class="s">'r'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">ylabel</span><span class="p">(</span><span class="s">'z'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+
+</code></pre></div>    </div>
+  </div>
+
+  <div class="output_wrapper">
+    <div class="output_subarea">
+
+      <div class="output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Text(0,0.5,'z')
+</code></pre></div>      </div>
+
+    </div>
+  </div>
+  <div class="output_wrapper">
+    <div class="output_subarea">
+
+      <p class="output_png"><img src="../images/features/TaylorCouetteFlow_35_1.png" alt="png" /></p>
+
+    </div>
+  </div>
+</div>
+
+<h2 id="time-step-size-and-the-cfl-condition">Time step size and the CFL condition</h2>
+
+<p>Here, we use the nice CFL calculator provided by the <code class="highlighter-rouge">flow_tools</code> package in the <code class="highlighter-rouge">extras</code> module.</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">CFL</span> <span class="o">=</span> <span class="n">flow_tools</span><span class="o">.</span><span class="n">CFL</span><span class="p">(</span><span class="n">IVP</span><span class="p">,</span> <span class="n">initial_dt</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">cadence</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">safety</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+                     <span class="n">max_change</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">min_change</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">CFL</span><span class="o">.</span><span class="n">add_velocities</span><span class="p">((</span><span class="s">'u'</span><span class="p">,</span> <span class="s">'w'</span><span class="p">))</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<h2 id="analysis">Analysis</h2>
+
+<p>Dedalus has a very powerful inline analysis system, and here we set up a few.</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Integrated energy every 10 iterations</span>
+<span class="n">analysis1</span> <span class="o">=</span> <span class="n">IVP</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">add_file_handler</span><span class="p">(</span><span class="s">"scalar_data"</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">analysis1</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="s">"integ(0.5 * (u*u + v*v + w*w))"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">"total kinetic energy"</span><span class="p">)</span>
+<span class="n">analysis1</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="s">"integ(0.5 * (u*u + w*w))"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">"meridional kinetic energy"</span><span class="p">)</span>
+<span class="n">analysis1</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="s">"integ((u*u)**0.5)"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">'u_rms'</span><span class="p">)</span>
+<span class="n">analysis1</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="s">"integ((w*w)**0.5)"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">'w_rms'</span><span class="p">)</span>
+
+<span class="c"># Snapshots every half an inner rotation period</span>
+<span class="n">analysis2</span> <span class="o">=</span> <span class="n">IVP</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">add_file_handler</span><span class="p">(</span><span class="s">'snapshots'</span><span class="p">,</span><span class="n">sim_dt</span><span class="o">=</span><span class="mf">0.5</span><span class="o">*</span><span class="n">period</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">analysis2</span><span class="o">.</span><span class="n">add_system</span><span class="p">(</span><span class="n">IVP</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s">'g'</span><span class="p">)</span>
+
+<span class="c"># radial profiles every 100 timestpes</span>
+<span class="n">analysis3</span> <span class="o">=</span> <span class="n">IVP</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">add_file_handler</span><span class="p">(</span><span class="s">"radial_profiles"</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">analysis3</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="s">"integ(r*v, 'z')"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">'Angular Momentum'</span><span class="p">)</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<h2 id="the-main-loop">The Main Loop</h2>
+<p>And here we actually run the simulation!</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dt</span> <span class="o">=</span> <span class="n">CFL</span><span class="o">.</span><span class="n">compute_dt</span><span class="p">()</span>
+<span class="c"># Main loop</span>
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="k">while</span> <span class="n">IVP</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+    <span class="n">IVP</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">IVP</span><span class="o">.</span><span class="n">iteration</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">'Iteration: </span><span class="si">%</span><span class="s">i, Time: </span><span class="si">%</span><span class="s">e, dt: </span><span class="si">%</span><span class="s">e'</span> <span class="o">%</span><span class="p">(</span><span class="n">IVP</span><span class="o">.</span><span class="n">iteration</span><span class="p">,</span> <span class="n">IVP</span><span class="o">.</span><span class="n">sim_time</span><span class="p">,</span> <span class="n">dt</span><span class="p">))</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">CFL</span><span class="o">.</span><span class="n">compute_dt</span><span class="p">()</span>
+
+
+<span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="c"># Print statistics</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">'Total time: </span><span class="si">%</span><span class="s">f'</span> <span class="o">%</span><span class="p">(</span><span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="p">))</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">'Iterations: </span><span class="si">%</span><span class="s">i'</span> <span class="o">%</span><span class="n">IVP</span><span class="o">.</span><span class="n">iteration</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">'Average timestep: </span><span class="si">%</span><span class="s">f'</span> <span class="o">%</span><span class="p">(</span><span class="n">IVP</span><span class="o">.</span><span class="n">sim_time</span><span class="o">/</span><span class="n">IVP</span><span class="o">.</span><span class="n">iteration</span><span class="p">))</span>
+
+</code></pre></div>    </div>
+  </div>
+
+  <div class="output_wrapper">
+    <div class="output_subarea">
+      <div class="output_stream highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2018-10-14 08:57:41,646 __main__ 0/1 INFO :: Iteration: 10, Time: 1.200000e-02, dt: 1.500000e-03
+2018-10-14 08:57:42,104 __main__ 0/1 INFO :: Iteration: 20, Time: 3.825000e-02, dt: 3.375000e-03
+2018-10-14 08:57:42,564 __main__ 0/1 INFO :: Iteration: 30, Time: 9.731250e-02, dt: 7.593750e-03
+2018-10-14 08:57:43,033 __main__ 0/1 INFO :: Iteration: 40, Time: 2.302031e-01, dt: 1.708594e-02
+2018-10-14 08:57:43,497 __main__ 0/1 INFO :: Iteration: 50, Time: 5.292070e-01, dt: 3.844336e-02
+2018-10-14 08:57:43,970 __main__ 0/1 INFO :: Iteration: 60, Time: 1.201966e+00, dt: 8.649756e-02
+2018-10-14 08:57:44,466 __main__ 0/1 INFO :: Iteration: 70, Time: 2.715673e+00, dt: 1.946195e-01
+2018-10-14 08:57:44,955 __main__ 0/1 INFO :: Iteration: 80, Time: 6.121514e+00, dt: 4.378939e-01
+2018-10-14 08:57:45,478 __main__ 0/1 INFO :: Iteration: 90, Time: 1.378466e+01, dt: 9.852613e-01
+2018-10-14 08:57:45,995 __main__ 0/1 INFO :: Iteration: 100, Time: 3.102673e+01, dt: 2.216838e+00
+2018-10-14 08:57:46,541 __main__ 0/1 INFO :: Iteration: 110, Time: 6.982139e+01, dt: 4.987885e+00
+2018-10-14 08:57:47,206 __main__ 0/1 INFO :: Iteration: 120, Time: 1.571094e+02, dt: 1.122274e+01
+2018-10-14 08:57:47,516 solvers 0/1 INFO :: Simulation stop time reached.
+2018-10-14 08:57:47,518 __main__ 0/1 INFO :: Total time: 6.484288
+2018-10-14 08:57:47,520 __main__ 0/1 INFO :: Iterations: 124
+2018-10-14 08:57:47,521 __main__ 0/1 INFO :: Average timestep: 1.764794
+</code></pre></div>      </div>
+    </div>
+  </div>
+</div>
+
+<h2 id="analysis-1">Analysis</h2>
+
+<p>First, let’s look at our last time snapshot, plotting the background $v \mathbf{\hat{\theta}}$ velocity with arrows representing the meridional flow:</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">figsize</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">pcolormesh</span><span class="p">((</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">ones_like</span><span class="p">(</span><span class="n">z</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,(</span><span class="n">z</span><span class="o">*</span><span class="n">ones_like</span><span class="p">(</span><span class="n">r</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">v</span><span class="p">[</span><span class="s">'g'</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s">'PuOr'</span><span class="p">)</span>
+<span class="n">quiver</span><span class="p">((</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">ones_like</span><span class="p">(</span><span class="n">z</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,(</span><span class="n">z</span><span class="o">*</span><span class="n">ones_like</span><span class="p">(</span><span class="n">r</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">u</span><span class="p">[</span><span class="s">'g'</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">w</span><span class="p">[</span><span class="s">'g'</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>
+<span class="n">axis</span><span class="p">(</span><span class="s">'image'</span><span class="p">)</span>
+<span class="n">xlabel</span><span class="p">(</span><span class="s">'r'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">ylabel</span><span class="p">(</span><span class="s">'z'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+
+</code></pre></div>    </div>
+  </div>
+
+  <div class="output_wrapper">
+    <div class="output_subarea">
+
+      <div class="output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Text(0,0.5,'z')
+</code></pre></div>      </div>
+
+    </div>
+  </div>
+  <div class="output_wrapper">
+    <div class="output_subarea">
+
+      <p class="output_png"><img src="../images/features/TaylorCouetteFlow_43_1.png" alt="png" /></p>
+
+    </div>
+  </div>
+</div>
+
+<p>But we really want some quantitative comparison with the growth rate $\gamma_{analytic}$ from Barenghi (1991). First we construct a small helper function to read our timeseries data, and then we load it out of the self-documented HDF5 file</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">get_timeseries</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="n">data_1d</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">'scales/sim_time'</span><span class="p">][:]</span>
+    <span class="n">data_out</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">'tasks/</span><span class="si">%</span><span class="s">s'</span><span class="o">%</span><span class="n">field</span><span class="p">][:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">data_out</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s">"scalar_data/scalar_data_s1/scalar_data_s1_p0.h5"</span><span class="p">,</span> <span class="s">"r"</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">ke</span> <span class="o">=</span> <span class="n">get_timeseries</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s">'total kinetic energy'</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">kem</span> <span class="o">=</span> <span class="n">get_timeseries</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s">'meridional kinetic energy'</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">urms</span> <span class="o">=</span> <span class="n">get_timeseries</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s">'u_rms'</span><span class="p">)</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">wrms</span> <span class="o">=</span> <span class="n">get_timeseries</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s">'w_rms'</span><span class="p">)</span>
+
+</code></pre></div>    </div>
+  </div>
+
+</div>
+
+<p>In order to compare to Barenghi (1991), we scale our results by the Reynolds number, because we have non-dimensionalized slightly differently than he did.</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">t_window</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="o">/</span><span class="n">period</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">t</span><span class="o">/</span><span class="n">period</span> <span class="o">&lt;</span> <span class="mi">14</span><span class="p">)</span>
+
+<span class="n">gamma_w</span><span class="p">,</span> <span class="n">log_w0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">t_window</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">wrms</span><span class="p">[</span><span class="n">t_window</span><span class="p">]),</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">gamma_w_scaled</span> <span class="o">=</span> <span class="n">gamma_w</span><span class="o">*</span><span class="n">Re</span>
+<span class="n">gamma_barenghi</span> <span class="o">=</span> <span class="mf">0.430108693</span>
+<span class="n">rel_error_barenghi</span> <span class="o">=</span> <span class="p">(</span><span class="n">gamma_barenghi</span> <span class="o">-</span> <span class="n">gamma_w_scaled</span><span class="p">)</span><span class="o">/</span><span class="n">gamma_barenghi</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">"gamma_w = </span><span class="si">%10.8</span><span class="s">f"</span> <span class="o">%</span> <span class="n">gamma_w_scaled</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"relative error = </span><span class="si">%10.8</span><span class="s">e"</span> <span class="o">%</span> <span class="n">rel_error_barenghi</span><span class="p">)</span>
+
+</code></pre></div>    </div>
+  </div>
+
+  <div class="output_wrapper">
+    <div class="output_subarea">
+      <div class="output_stream highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gamma_w = 0.34931316
+relative error = 1.87849109e-01
+</code></pre></div>      </div>
+    </div>
+  </div>
+</div>
+
+<p>This looks like a rather high error (order 10% or so), but we know from Barenghi (1991) that the error is dominated by the timestep. Here, we’ve used a very loose timestep, but if you fix dt (rather than using the CFL calculator), you can get much lower errors at the cost of a longer run.</p>
+
+<p>Finally, we plot the RMS $w$ velocity, and compare it with the fitted exponential solution</p>
+
+<div class="cell code_cell">
+  <div class="input_area">
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fig</span> <span class="o">=</span> <span class="n">figure</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">t</span><span class="o">/</span><span class="n">period</span><span class="p">,</span> <span class="n">wrms</span><span class="p">,</span> <span class="s">'ko'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">r'$w_{rms}$'</span><span class="p">,</span><span class="n">ms</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">t</span><span class="o">/</span><span class="n">period</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_w0</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">gamma_w</span><span class="o">*</span><span class="n">t</span><span class="p">),</span> <span class="s">'k-.'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">'$</span><span class="err">\</span><span class="s">gamma_w = </span><span class="si">%</span><span class="s">f$'</span> <span class="o">%</span> <span class="n">gamma_w</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s">'upper right'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span><span class="o">.</span><span class="n">draw_frame</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">r"$t/t_{ic}$"</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">r"$w_{rms}$"</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s">'growth_rates.png'</span><span class="p">)</span>
+
+</code></pre></div>    </div>
+  </div>
+
+  <div class="output_wrapper">
+    <div class="output_subarea">
+
+      <p class="output_png"><img src="../images/features/TaylorCouetteFlow_50_0.png" alt="png" /></p>
+
+    </div>
+  </div>
+</div>
+
+
+              <nav class="c-page__nav">
+  
+    
+    <a id="js-page__nav__prev" class="c-page__nav__prev" href="/jupyter-book/01/3/subsection/subsectiontwo.html">
+      〈 <span class="u-margin-right-tiny"></span> Subsection Demo 2
+    </a>
+  
+
+  
+    
+    <a id="js-page__nav__next" class="c-page__nav__next" href="">
+       <span class="u-margin-right-tiny"></span> 〉
+    </a>
+  
+</nav>
+
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+  </body>
+</html>
