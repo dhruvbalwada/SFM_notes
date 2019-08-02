@@ -5,7 +5,9 @@
 *Just some definitions here.*
 
 Energy is
-$$ \Epsilon = \frac{1}{2} \overline{\mathbf{u}.\mathbf{u}} $$,
+
+$$ E = \frac{1}{2} \overline{\mathbf{u}.\mathbf{u}} $$,
+
 where the average is an ensemble average, sometimes approximated by a time average.
 
 Using the definition of Fourier transform
@@ -19,7 +21,7 @@ Assuming *homogeneity*, the LHS $\overline{\mathbf{u}.\mathbf{u}}$ can not be a 
 
 $$ \overline{\hat{\mathbf{u}}(\mathbf{k}) .  \hat{\mathbf{u}}^* (\mathbf{k'})} = \delta_{\mathbf{kk'}} |\hat{\mathbf{u}}(\mathbf{k})|^2  = 2 \delta_{\mathbf{kk'}} E( \mathbf{k}) \geq 0  $$
 
-$$ \Epsilon = \frac{1}{2} \overline{\mathbf{u}.\mathbf{u}}  = \sum_{\mathbf{k}} E( \mathbf{k}) $$
+$$ E = \frac{1}{2} \overline{\mathbf{u}.\mathbf{u}}  = \sum_{\mathbf{k}} E( \mathbf{k}) $$
 
 Note: This is similar to Parseval's theorem, but the assumption of homogeneity allowed us to get away without doing a spatial average.
 
@@ -53,4 +55,5 @@ $$\int_{2\pi/L_F}^{2\pi/l_\nu} E_o(\kappa) d\kappa  = C \epsilon^{2/3} \int_{2\p
 $$ = \frac{3}{2}C \epsilon^{2/3} (L_F^{2/3} - l_\nu^{2/3}).$$
 Thus, the total energy containted in the inertial range is finite even as $nu \rightarrow 0$.
 
-However, this is not the case for the enstrophy spectrum $|\mathbf{\omega}|^2 = \kappa^2 = C \epsilon^{2/3}\kappa^{1/3}$. This, function does not have a finite limit as viscosity goes to zero, and the total enstrophy increases unboundedly as Reyonld's number increases.
+However, this is not the case for the enstrophy spectrum $ \vert
+{\mathbf{\omega}}\vert ^2 = \kappa^2 = C \epsilon^{2/3}\kappa^{1/3} $. This, function does not have a finite limit as viscosity goes to zero, and the total enstrophy increases unboundedly as Reyonld's number increases.
