@@ -7,7 +7,7 @@ prev_page:
   title: 'Home'
 next_page:
   url: /files/vertical_velocities.html
-  title: 'Vertical velocity'
+  title: 'Vertical Velocity'
 comment: "***PROGRAMMATICALLY GENERATED, DO NOT EDIT. SEE ORIGINAL FILES IN /content***"
 ---
 ## Inertial Range Arguments by Kolmogrov
